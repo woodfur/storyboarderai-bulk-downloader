@@ -4,13 +4,118 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Storyboard Bulk Downloader</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #0f172a;
+    --panel: #111827;
+    --text: #e5e7eb;
+    --muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-2: #22d3ee;
+    --danger: #ef4444;
+    --success: #10b981;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    background: linear-gradient(135deg, var(--bg), #0b1022);
+    color: var(--text);
+    width: 320px;
+    min-height: 220px;
+    padding: 16px;
+  }
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .controls {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #0b1022;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    transition: transform 0.06s ease, box-shadow 0.2s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .status {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .progress {
+    margin-top: 8px;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width 0.2s ease;
+  }
+  .brand {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 6px 16px rgba(34, 211, 238, 0.3);
+  }
+</style>
 </head>
 <body>
-<div>
-<label><input type="checkbox" id="zipCheckbox"> Download as ZIP</label>
+<div class="card">
+  <div class="title">
+    <div class="brand"></div>
+    Storyboarder Bulk Downloader
+  </div>
+  <div class="subtitle">Download all frames from the current project.</div>
+  <div class="controls">
+    <label class="checkbox">
+      <input type="checkbox" id="zipCheckbox"> Download as ZIP
+    </label>
+    <button id="downloadBtn" class="btn">Download All</button>
+  </div>
+  <div id="status" class="status">Idle</div>
+  <div class="progress"><div id="bar" class="bar"></div></div>
 </div>
-<button id="downloadBtn">Download All Storyboard Images</button>
-<div id="status"></div>
 <script type="module" src="popup.js"></script>
 </body>
 </html>

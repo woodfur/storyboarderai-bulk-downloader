@@ -1,10 +1,18 @@
 const getActiveTab = async () => {
-  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-  return tabs[0];
+  try {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    return tabs && tabs.length ? tabs[0] : undefined;
+  } catch (e) {
+    return undefined;
+  }
 };
 
 const sendCollect = async (tabId) => {
-  return await chrome.tabs.sendMessage(tabId, { type: 'collectImages' });
+  try {
+    return await chrome.tabs.sendMessage(tabId, { type: 'collectImages' });
+  } catch (e) {
+    return undefined;
+  }
 };
 
 const setStatus = (text) => {
@@ -23,23 +31,34 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
     setStatus('No active tab');
     return;
   }
+  const url = tab.url || '';
+  const isAllowed = /^https:\/\/.*\.storyboarder\.ai\//.test(url);
+  if (!isAllowed) {
+    setStatus('Open a Storyboarder.ai project tab');
+    return;
+  }
+  setStatus('Collecting images...');
   const data = await sendCollect(tab.id);
-  if (!data || !data.images || data.images.length === 0) {
-    setStatus('No images found');
+  if (!data) {
+    setStatus('Could not access the page. Reload and try again.');
+    return;
+  }
+  if (!data.images || data.images.length === 0) {
+    setStatus('No images found on this page');
     return;
   }
   const zipChecked = document.getElementById('zipCheckbox').checked;
   if (zipChecked) {
-    setStatus('ZIP mode not available, downloading individually');
+    setStatus('ZIP mode coming soon — downloading individually');
   }
   setStatus('Downloading...');
   const res = await downloadIndividually(data);
   if (!res || !res.ok) {
-    setStatus('Error');
+    setStatus('Download error. Check permissions and try again.');
     return;
   }
   const total = data.images.length;
   const failed = res.results.filter(r => !r.ok).length;
   const success = total - failed;
-  setStatus('Completed: ' + success + ' succeeded, ' + failed + ' failed');
+  setStatus('Completed — ' + success + ' succeeded, ' + failed + ' failed');
 });
