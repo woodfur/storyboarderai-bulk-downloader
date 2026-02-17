@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Storyboard Bulk Downloader",
+  "version": "1.0.0",
+  "description": "Download all storyboard images from Storyboarder.ai",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://*.storyboarder.ai/*"
+  ],
+  "action": {
+    "default_title": "Storyboard Bulk Downloader",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.storyboarder.ai/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
